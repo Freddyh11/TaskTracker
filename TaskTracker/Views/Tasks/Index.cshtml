@@ -1,0 +1,57 @@
+@model List<TaskTracker.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "My Tasks";
+}
+
+<h2>My Tasks</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Add New Task</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>
+            @Html.ActionLink("Due Date", "Index", new { sortOrder = ViewData["DueDateSortParm"] })
+        </th>
+        <th>
+            @Html.ActionLink("Priority", "Index", new { sortOrder = ViewData["PrioritySortParm"] })
+        </th>
+        <th>
+            @Html.ActionLink("Done?", "Index", new { sortOrder = ViewData["DoneSortParm"] })
+        </th>
+        <th></th>
+    </tr>
+</thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.DueDate?.ToString("MM/dd/yyyy")</td>
+                <td>@task.Priority</td>
+
+                <td>
+                    <form asp-action="ToggleDone" method="post">
+                        <input type="hidden" name="id" value="@task.Id" />
+                        <button class="btn btn-sm @(task.IsDone ? "btn-success" : "btn-outline-secondary")">
+                            @(task.IsDone ? "Done" : "Not Done")
+                        </button>
+                    </form>
+                </td>
+
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@task.Id">Edit</a>
+
+                    <form asp-action="Delete" method="post" style="display:inline-block">
+                        <input type="hidden" name="id" value="@task.Id" />
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
